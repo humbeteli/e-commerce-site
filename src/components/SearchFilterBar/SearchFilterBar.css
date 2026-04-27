@@ -57,6 +57,7 @@
   background: #f7f7f7;
 }
 
+
 .sfbar-count {
   font-size: 14px;
   color: #888;
@@ -172,7 +173,9 @@
   .sfbar {
     padding: 0 12px;
     margin-top: 0;
+    top: 67px;
     gap: 8px;
+    z-index: 997;
   }
 
   .sfbar-sort-btn {
