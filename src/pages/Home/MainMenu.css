@@ -1,0 +1,51 @@
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+  padding: 40px 20px;
+  max-width: 1300px;
+  margin: 100px auto 40px;
+}
+
+.skeleton-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.sk-img    { height: 180px; width: 100%; border-radius: 8px; margin-bottom: 15px; }
+.sk-brand  { height: 10px; width: 45%; margin-bottom: 10px; }
+.sk-title  { height: 14px; width: 85%; margin-bottom: 6px; }
+.sk-title2 { height: 14px; width: 60%; margin-bottom: 10px; }
+.sk-rating { height: 12px; width: 30%; margin-bottom: 10px; }
+.sk-price  { height: 20px; width: 40%; margin-bottom: 20px; }
+.sk-btn    { height: 44px; width: 100%; border-radius: 8px; margin-top: auto; }
+
+@media (max-width: 768px) {
+  .skeleton-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 10px;
+    margin: 80px auto 80px;
+  }
+
+  .sk-img {
+    height: 130px;
+  }
+}

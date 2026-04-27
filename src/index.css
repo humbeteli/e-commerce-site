@@ -1,0 +1,78 @@
+:root {
+  --primary-color: #1a1a1a;
+  --accent-color: #6366f1;
+  --bg-light: #f9fafb;
+  --card-bg: #ffffff;
+  --text-main: #1e272e;
+
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+}
+
+main {
+  flex: 1;
+}
+
+
+.similar-products {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 1300px;
+  margin: 20px auto;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  background-color: white;
+}
+
+.similar-products > * {
+  min-width: 250px;
+  flex-shrink: 0;
+}
+
+.similar-products-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e272e;
+  max-width: 1300px;
+  margin: 30px auto 30px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .similar-products {
+    margin: 10px 12px 80px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .similar-products > * {
+    min-width: 160px;
+  }
+
+  .similar-products-title {
+    margin-left: 12px;
+    font-size: 15px;
+  }
+}
