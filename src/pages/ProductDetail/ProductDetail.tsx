@@ -15,8 +15,6 @@ const ProductDetail = () => {
 
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
-  const [userRating, setUserRating] = useState<number>(0);
-  const [hoverRating, setHoverRating] = useState<number>(0);
 
   const [userReviews, setUserReviews] = useState<
     {
@@ -44,9 +42,6 @@ const ProductDetail = () => {
           setActiveImg(0);
           setQty(1);
 
-          const savedRating = localStorage.getItem(`rating-${id}`);
-          setUserRating(savedRating ? Number(savedRating) : 0);
-
           const savedReviews = localStorage.getItem(`reviews-${id}`);
           setUserReviews(savedReviews ? JSON.parse(savedReviews) : []);
         }
@@ -60,11 +55,6 @@ const ProductDetail = () => {
       ignore = true;
     };
   }, [id]);
-
-  const handleRating = (star: number) => {
-    setUserRating(star);
-    localStorage.setItem(`rating-${id}`, String(star));
-  };
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -156,25 +146,6 @@ const ProductDetail = () => {
             </div>
 
             {/* user rating */}
-            <div className="detail-user-rating">
-              <span className="detail-user-rating-label">Your rating:</span>
-              <div className="stars">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={`star-icon ${(hoverRating || userRating) >= star ? "star-icon--active" : ""}`}
-                    onClick={() => handleRating(star)}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
-              {userRating > 0 && (
-                <span className="detail-user-rating-val">{userRating}/5</span>
-              )}
-            </div>
 
             <h2 className="detail-price">{product.price} $</h2>
 
