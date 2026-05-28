@@ -20,8 +20,7 @@ A modern e-commerce web application built with React, TypeScript, and DummyJSON 
 * DummyJSON API
 
 ## Live Demo
-
-https://e-commerce-site-xi-flax.vercel.app/
+[![Deploy with Vercel](https://vercel.com/button)](https://e-commerce-site-xi-flax.vercel.app/)
 
 ## Installation
 
