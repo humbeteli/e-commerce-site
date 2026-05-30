@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useMemo } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import HomeSection from "../../components/HomeSection/HomeSection";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchFilterBar from "../../components/SearchFilterBar/SearchFilterBar";
@@ -6,6 +8,7 @@ import { SORT_OPTIONS } from "../../components/sortOptions";
 import type { SortOption } from "../../components/sortOptions";
 import { useProducts } from "../../hooks/useProducts";
 import type { Product } from "../../types/product";
+import { useState } from "react";
 import "./MainMenu.css";
 
 type Props = {
@@ -20,22 +23,26 @@ type Props = {
 
 const MainMenu = ({
   selectedCategory,
+  setSelectedCategory,
   searchResults,
   setSearchResults,
   onAddToCart,
   onToggleFavorite,
   favorites,
 }: Props) => {
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page") ?? "1");
+
+  const setPage = (p: number) => {
+    setSearchParams({ page: String(p) });
+    document.body.scrollTop = 0;
+  };
+
   const [activeSort, setActiveSort] = useState<SortOption>(SORT_OPTIONS[0]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data, isLoading, isError } = useProducts(selectedCategory, page);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [selectedCategory, page]);
-
+  const navigate = useNavigate();
   const products = data?.products ?? [];
   const total = data?.total ?? 0;
   const limit = 28;
@@ -67,6 +74,17 @@ const MainMenu = ({
 
   return (
     <div className="sfrbar">
+      {!selectedCategory && !searchResults && (
+        <HomeSection
+          onAddToCart={onAddToCart}
+          onToggleFavorite={onToggleFavorite}
+          favorites={favorites}
+          onCategorySelect={(cat) => {
+            setSelectedCategory(cat);
+            navigate("/");
+          }}
+        />
+      )}
       {searchResults && (
         <SearchFilterBar
           resultCount={searchResults.length}

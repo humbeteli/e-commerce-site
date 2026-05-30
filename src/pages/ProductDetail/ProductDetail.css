@@ -58,6 +58,7 @@
   align-items: center;
   justify-content: center;
   height: 320px;
+  position: relative;
 }
 
 .gallery-main-img {
@@ -94,6 +95,104 @@
 
 .gallery-thumb--active {
   border-color: #1e272e;
+}
+
+
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.gallery-arrow:hover {
+  background: white;
+  border-color: #1e272e;
+}
+
+.gallery-arrow--left { left: 8px; }
+.gallery-arrow--right { right: 8px; }
+
+.gallery-main-img {
+  cursor: zoom-in;
+}
+
+/* lightbox */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.lightbox-img {
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.lightbox-arrow:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.lightbox-arrow--left { left: 24px; }
+.lightbox-arrow--right { right: 24px; }
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.3);
 }
 
 /* info */
@@ -448,6 +547,137 @@
 .detail-mobile-bar {
   display: none;
 }
+
+.review-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 32px;
+  width: 340px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: #1e272e;
+}
+
+.modal-text {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.modal-btn--cancel {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-btn--cancel:hover {
+  background: #e5e7eb;
+}
+
+.modal-btn--confirm {
+  background: #ef4444;
+  color: white;
+}
+
+.modal-btn--confirm:hover {
+  background: #dc2626;
+}
+
+.review-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.review-like-btn {
+  background: none;
+  border: none;
+  padding: 2px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #6b7280;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.review-like-btn:hover {
+  color: #49a300;
+}
+
+.review-like-btn--liked {
+  color: #49a300;
+}
+
+.review-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 2px;
+  margin-left: auto;
+}
+
+.like-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.review-like-btn:hover .like-icon {
+  filter: invert(40%) sepia(100%) saturate(400%) hue-rotate(80deg);
+}
+
+.review-like-btn--liked .like-icon {
+  filter: invert(40%) sepia(100%) saturate(400%) hue-rotate(80deg);
+}
+
+.review-delete-btn img {
+  width: 18px;
+  height: 18px;
+}
+
 
 @media (max-width: 768px) {
   .detail-container {

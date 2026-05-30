@@ -6,28 +6,40 @@ import { useAddToCartFeedBack } from "../../hooks/useAddToCartFeedBack";
 import { useStore } from "../../store/useStore";
 import Spinner from "../../components/Spinner/Spinner";
 
+type UserReview = {
+  id: string;
+  name: string;
+  comment: string;
+  rating: number;
+  date: string;
+};
+
+type ReviewLikes = {
+  [reviewId: string]: number;
+};
+
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart, toggleFavorite, favorites } = useStore();
   const [product, setProduct] = useState<Product | null>(null);
   const { added, trigger } = useAddToCartFeedBack();
-
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
-
-  const [userReviews, setUserReviews] = useState<
-    {
-      name: string;
-      comment: string;
-      rating: number;
-      date: string;
-    }[]
-  >([]);
+  const [userReviews, setUserReviews] = useState<UserReview[]>([]);
+  const [reviewLikes, setReviewLikes] = useState<ReviewLikes>({});
+  const [likedReviews, setLikedReviews] = useState<string[]>([]);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [commentName, setCommentName] = useState("");
   const [commentText, setCommentText] = useState("");
   const [commentRating, setCommentRating] = useState(0);
   const [commentHover, setCommentHover] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+
+  const prevImg = () =>
+    setActiveImg((i) => (i === 0 ? images.length - 1 : i - 1));
+  const nextImg = () =>
+    setActiveImg((i) => (i === images.length - 1 ? 0 : i + 1));
 
   useEffect(() => {
     if (!id) return;
@@ -44,6 +56,12 @@ const ProductDetail = () => {
 
           const savedReviews = localStorage.getItem(`reviews-${id}`);
           setUserReviews(savedReviews ? JSON.parse(savedReviews) : []);
+
+          const savedLikes = localStorage.getItem(`review-likes-${id}`);
+          setReviewLikes(savedLikes ? JSON.parse(savedLikes) : {});
+
+          const savedLiked = localStorage.getItem(`review-liked-${id}`);
+          setLikedReviews(savedLiked ? JSON.parse(savedLiked) : []);
         }
       } catch (err) {
         console.error(err);
@@ -68,7 +86,8 @@ const ProductDetail = () => {
     if (!commentText.trim() || !commentName.trim() || commentRating === 0)
       return;
 
-    const newReview = {
+    const newReview: UserReview = {
+      id: Date.now().toString(),
       name: commentName,
       comment: commentText,
       rating: commentRating,
@@ -82,6 +101,41 @@ const ProductDetail = () => {
     setCommentName("");
     setCommentText("");
     setCommentRating(0);
+  };
+
+  const handleDeleteReview = (reviewId: string) => {
+    setDeleteTargetId(reviewId);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTargetId) return;
+    const updated = userReviews.filter((r) => r.id !== deleteTargetId);
+    setUserReviews(updated);
+    localStorage.setItem(`reviews-${id}`, JSON.stringify(updated));
+    setDeleteTargetId(null);
+  };
+
+  const cancelDelete = () => {
+    setDeleteTargetId(null);
+  };
+
+  const handleLike = (reviewId: string) => {
+    const alreadyLiked = likedReviews.includes(reviewId);
+
+    const updatedLikes = {
+      ...reviewLikes,
+      [reviewId]: alreadyLiked
+        ? Math.max(0, (reviewLikes[reviewId] ?? 0) - 1)
+        : (reviewLikes[reviewId] ?? 0) + 1,
+    };
+    const updatedLiked = alreadyLiked
+      ? likedReviews.filter((r) => r !== reviewId)
+      : [...likedReviews, reviewId];
+
+    setReviewLikes(updatedLikes);
+    setLikedReviews(updatedLiked);
+    localStorage.setItem(`review-likes-${id}`, JSON.stringify(updatedLikes));
+    localStorage.setItem(`review-liked-${id}`, JSON.stringify(updatedLiked));
   };
 
   if (!product) return <Spinner />;
@@ -98,6 +152,62 @@ const ProductDetail = () => {
 
   return (
     <>
+      {/* delete modal */}
+      {deleteTargetId && (
+        <div className="modal-overlay" onClick={cancelDelete}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <h4 className="modal-title">Delete Review</h4>
+            <p className="modal-text">
+              Are you sure you want to delete this review?
+            </p>
+            <div className="modal-actions">
+              <button
+                className="modal-btn modal-btn--cancel"
+                onClick={cancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-btn modal-btn--confirm"
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {lightbox && (
+        <div className="lightbox-overlay" onClick={() => setLightbox(false)}>
+          <button
+            className="lightbox-arrow lightbox-arrow--left"
+            onClick={(e) => {
+              e.stopPropagation();
+              prevImg();
+            }}
+          >
+            ‹
+          </button>
+          <img
+            src={images[activeImg]}
+            alt=""
+            className="lightbox-img"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            className="lightbox-arrow lightbox-arrow--right"
+            onClick={(e) => {
+              e.stopPropagation();
+              nextImg();
+            }}
+          >
+            ›
+          </button>
+          <button className="lightbox-close" onClick={() => setLightbox(false)}>
+            ×
+          </button>
+        </div>
+      )}
       <div className="detail-container">
         <button className="detail-back-btn" onClick={() => navigate(-1)}>
           <img src="/images/back.svg" alt="" />
@@ -105,14 +215,27 @@ const ProductDetail = () => {
         </button>
 
         <div className="details">
-          {/* galery */}
+          {/* gallery */}
           <div className="detail-gallery">
             <div className="gallery-main">
+              <button
+                className="gallery-arrow gallery-arrow--left"
+                onClick={prevImg}
+              >
+                ‹
+              </button>
               <img
                 src={images[activeImg]}
                 alt={product.title}
                 className="gallery-main-img"
+                onClick={() => setLightbox(true)}
               />
+              <button
+                className="gallery-arrow gallery-arrow--right"
+                onClick={nextImg}
+              >
+                ›
+              </button>
             </div>
 
             {images.length > 1 && (
@@ -138,14 +261,11 @@ const ProductDetail = () => {
 
             <h1>{product.title}</h1>
 
-            {/* rating */}
             <div className="detail-rating-row">
-              <img src="/images/star.svg" className="detail-rating-star"></img>
+              <img src="/images/star.svg" className="detail-rating-star" />
               <span className="detail-rating-val">{product.rating}</span>
               <span className="detail-rating-label">Rating</span>
             </div>
-
-            {/* user rating */}
 
             <h2 className="detail-price">{product.price} $</h2>
 
@@ -253,48 +373,81 @@ const ProductDetail = () => {
                 </button>
               </div>
 
+              {/* user reviews */}
               {userReviews.length > 0 && (
                 <div className="review-section">
                   <h4>Your Reviews</h4>
-                  {userReviews.map((review, i) => (
-                    <div key={i} className="review-card review-card--user">
+                  {userReviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="review-card review-card--user"
+                    >
                       <div className="review-top">
                         <span className="review-name">{review.name}</span>
                         <span className="review-stars">
                           {"★".repeat(review.rating)}
                           {"☆".repeat(5 - review.rating)}
                         </span>
+                        <button
+                          className="review-delete-btn"
+                          onClick={() => handleDeleteReview(review.id)}
+                          title="Delete review"
+                        >
+                          <img src="/images/remove-comment.svg" alt="" />
+                        </button>
                       </div>
                       <p className="review-comment">{review.comment}</p>
-                      <small className="review-date">
-                        {new Date(review.date).toLocaleDateString()}
-                      </small>
+                      <div className="review-bottom">
+                        <small className="review-date">
+                          {new Date(review.date).toLocaleDateString()}
+                        </small>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* rating */}
+              {/* all reviews */}
               {product.reviews && product.reviews.length > 0 && (
                 <div className="review-section">
                   <h4>All Reviews</h4>
-                  {product.reviews.map((review, i) => (
-                    <div key={i} className="review-card">
-                      <div className="review-top">
-                        <span className="review-name">
-                          {review.reviewerName}
-                        </span>
-                        <span className="review-stars">
-                          {"★".repeat(review.rating)}
-                          {"☆".repeat(5 - review.rating)}
-                        </span>
+                  {product.reviews.map((review, i) => {
+                    const likeKey = `api-${i}`;
+                    return (
+                      <div key={i} className="review-card">
+                        <div className="review-top">
+                          <span className="review-name">
+                            {review.reviewerName}
+                          </span>
+                          <span className="review-stars">
+                            {"★".repeat(review.rating)}
+                            {"☆".repeat(5 - review.rating)}
+                          </span>
+                        </div>
+                        <p className="review-comment">{review.comment}</p>
+                        <div className="review-bottom">
+                          <small className="review-date">
+                            {new Date(review.date).toLocaleDateString()}
+                          </small>
+                          <button
+                            className={`review-like-btn ${likedReviews.includes(likeKey) ? "review-like-btn--liked" : ""}`}
+                            onClick={() => handleLike(likeKey)}
+                          >
+                            <img
+                              src={
+                                likedReviews.includes(likeKey)
+                                  ? "/images/like-active.svg"
+                                  : "/images/like.svg"
+                              }
+                              alt=""
+                              className="like-icon"
+                            />
+                            {reviewLikes[likeKey] ?? 0}
+                          </button>
+                        </div>
                       </div>
-                      <p className="review-comment">{review.comment}</p>
-                      <small className="review-date">
-                        {new Date(review.date).toLocaleDateString()}
-                      </small>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

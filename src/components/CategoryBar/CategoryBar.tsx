@@ -68,8 +68,7 @@ const CategoryBar = ({
   useEffect(() => {
     const handleScroll = () => {
       if (open) return;
-
-      const currentScroll = window.scrollY;
+      const currentScroll = document.body.scrollTop;
       if (currentScroll > lastScroll && currentScroll > 100) {
         setVisible(false);
       } else {
@@ -78,9 +77,9 @@ const CategoryBar = ({
       setLastScroll(currentScroll);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScroll, closeSidebar, open]);
+    document.body.addEventListener("scroll", handleScroll, { passive: true });
+    return () => document.body.removeEventListener("scroll", handleScroll);
+  }, [lastScroll, open]);
 
   useEffect(() => {
     if (open) {
@@ -88,20 +87,35 @@ const CategoryBar = ({
     } else {
       document.body.style.overflow = "";
     }
-
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
 
+  useEffect(() => {
+    if (open) {
+      window.history.pushState({ sidebar: true }, "");
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (open) closeSidebar();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [open, closeSidebar]);
+
   const handleSelect = (item: string) => {
     onCategorySelect(item.toLowerCase());
     closeSidebar();
+    setTimeout(() => {
+      document.body.scrollTop = 0;
+    }, 0);
   };
 
   return (
     <>
-      {/* categorybar */}
       <div
         className={`category-bar ${!visible ? "hidden" : ""}`}
         onMouseLeave={() => setLocalOpen(false)}
@@ -124,7 +138,6 @@ const CategoryBar = ({
         ))}
       </div>
 
-      {/* sidebar */}
       <div
         className={`sidebar ${open ? "active" : ""}`}
         onMouseEnter={() => setLocalOpen(true)}
@@ -171,7 +184,6 @@ const CategoryBar = ({
         </div>
       </div>
 
-      {/* overlay */}
       {open && <div id="overlay" className="active" onClick={closeSidebar} />}
     </>
   );
