@@ -31,6 +31,7 @@ const MainMenu = ({
   favorites,
 }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const page = Number(searchParams.get("page") ?? "1");
 
   const setPage = (p: number) => {
@@ -41,8 +42,13 @@ const MainMenu = ({
   const [activeSort, setActiveSort] = useState<SortOption>(SORT_OPTIONS[0]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { data, isLoading, isError } = useProducts(selectedCategory, page);
-  const navigate = useNavigate();
+  const isHome = !selectedCategory && !searchResults;
+
+  const { data, isLoading, isError } = useProducts(
+    isHome ? null : selectedCategory,
+    page
+  );
+
   const products = data?.products ?? [];
   const total = data?.total ?? 0;
   const limit = 28;
@@ -50,12 +56,10 @@ const MainMenu = ({
   const sortedSearchResults = useMemo(() => {
     if (!searchResults) return null;
     if (!activeSort.sortBy) return searchResults;
-
     return [...searchResults].sort((a, b) => {
       const key = activeSort.sortBy as keyof Product;
       const valA = a[key] as number;
       const valB = b[key] as number;
-
       if (activeSort.order === "asc") return valA - valB;
       return valB - valA;
     });
@@ -68,75 +72,84 @@ const MainMenu = ({
     setActiveSort(SORT_OPTIONS[0]);
   };
 
+  const handleCategorySelect = (cat: string) => {
+    setSelectedCategory(cat);
+    navigate("/");
+    document.body.scrollTop = 0;
+  };
+
   if (isError) {
     return <p style={{ textAlign: "center" }}>Error loading products</p>;
   }
 
   return (
     <div className="sfrbar">
-      {!selectedCategory && !searchResults && (
+
+      {/* landing page */}
+      {isHome && (
         <HomeSection
           onAddToCart={onAddToCart}
           onToggleFavorite={onToggleFavorite}
           favorites={favorites}
-          onCategorySelect={(cat) => {
-            setSelectedCategory(cat);
-            navigate("/");
-          }}
-        />
-      )}
-      {searchResults && (
-        <SearchFilterBar
-          resultCount={searchResults.length}
-          activeSort={activeSort}
-          onSortChange={setActiveSort}
-          viewMode={viewMode}
-          onViewChange={setViewMode}
-          onBack={handleBack}
+          onCategorySelect={handleCategorySelect}
         />
       )}
 
-      {isLoading ? (
-        <div className="skeleton-grid">
-          {Array.from({ length: 28 }).map((_, i) => (
-            <div key={i} className="skeleton-card">
-              <div className="sk-img shimmer"></div>
-              <div className="sk-brand shimmer"></div>
-              <div className="sk-title shimmer"></div>
-              <div className="sk-title2 shimmer"></div>
-              <div className="sk-rating shimmer"></div>
-              <div className="sk-price shimmer"></div>
-              <div className="sk-btn shimmer"></div>
-            </div>
-          ))}
-        </div>
-      ) : (
+      {/* məhsul gridi — yalnız kateqoriya və ya axtarış seçiləndə */}
+      {!isHome && (
         <>
-          <div
-            className={`products ${viewMode === "list" ? "products--list" : ""}`}
-          >
-            {displayProducts.length > 0 ? (
-              displayProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  onAdd={onAddToCart}
-                  onFavorite={() => onToggleFavorite(p.id)}
-                  isFav={favorites.includes(p.id)}
-                />
-              ))
-            ) : (
-              <p style={{ textAlign: "center" }}>No products found</p>
-            )}
-          </div>
-
-          {!searchResults && total > limit && (
-            <Pagination
-              page={page}
-              setPage={setPage}
-              total={total}
-              limit={limit}
+          {searchResults && (
+            <SearchFilterBar
+              resultCount={searchResults.length}
+              activeSort={activeSort}
+              onSortChange={setActiveSort}
+              viewMode={viewMode}
+              onViewChange={setViewMode}
+              onBack={handleBack}
             />
+          )}
+
+          {isLoading ? (
+            <div className="skeleton-grid">
+              {Array.from({ length: 28 }).map((_, i) => (
+                <div key={i} className="skeleton-card">
+                  <div className="sk-img shimmer"></div>
+                  <div className="sk-brand shimmer"></div>
+                  <div className="sk-title shimmer"></div>
+                  <div className="sk-title2 shimmer"></div>
+                  <div className="sk-rating shimmer"></div>
+                  <div className="sk-price shimmer"></div>
+                  <div className="sk-btn shimmer"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className={`products ${viewMode === "list" ? "products--list" : ""}`}>
+                {displayProducts.length > 0 ? (
+                  displayProducts.map((p) => (
+                    <ProductCard
+                      key={p.id}
+                      product={p}
+                      onAdd={onAddToCart}
+                      onFavorite={() => onToggleFavorite(p.id)}
+                      isFav={favorites.includes(p.id)}
+                    />
+                  ))
+                ) : (
+                  <p style={{ textAlign: "center" }}>No products found</p>
+                )}
+              </div>
+
+              {!searchResults && total > limit && (
+                <Pagination
+                  page={page}
+                  setPage={setPage}
+                  total={total}
+                  limit={limit}
+                />
+              )}
+            </>
           )}
         </>
       )}

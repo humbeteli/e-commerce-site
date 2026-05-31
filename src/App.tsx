@@ -27,11 +27,11 @@ function App() {
   }, []);
 
   const goHome = () => {
-  setSelectedCategory(null);
-  setSearchResults(null);
-  navigate("/");
-  document.body.scrollTop = 0;
-};
+    setSelectedCategory(null);
+    setSearchResults(null);
+    navigate("/");
+    document.body.scrollTop = 0;
+  };
 
   return (
     <>
@@ -115,6 +115,10 @@ function App() {
           navigate("/cart");
         }}
         sidebarOpen={sidebarOpen}
+        onCategorySelect={(cat) => {
+          setSelectedCategory(cat);
+          navigate("/");
+        }}
       />
     </>
   );

@@ -8,6 +8,9 @@
 
 /* duymeler */
 #pagination button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 36px;
   height: 36px;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -17,6 +20,15 @@
   color: #1e272e;
   font-weight: 600;
   transition: background 0.2s ease;
+}
+
+.nav-btn img {
+  width: 16px;
+  height: auto;
+}
+
+.nav-btn:hover img {
+  filter: brightness(0) invert(1);
 }
 
 #pagination button:hover {

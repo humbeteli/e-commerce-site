@@ -186,7 +186,7 @@ const ProductDetail = () => {
               prevImg();
             }}
           >
-            ‹
+            <img src="/images/prev-pic-w.svg" alt="prev" />
           </button>
           <img
             src={images[activeImg]}
@@ -201,7 +201,7 @@ const ProductDetail = () => {
               nextImg();
             }}
           >
-            ›
+            <img src="/images/next-pic-w.svg" alt="next" />
           </button>
           <button className="lightbox-close" onClick={() => setLightbox(false)}>
             ×
@@ -222,7 +222,7 @@ const ProductDetail = () => {
                 className="gallery-arrow gallery-arrow--left"
                 onClick={prevImg}
               >
-                ‹
+                <img src="/images/prev-pic.svg" alt="prev" />
               </button>
               <img
                 src={images[activeImg]}
@@ -234,7 +234,7 @@ const ProductDetail = () => {
                 className="gallery-arrow gallery-arrow--right"
                 onClick={nextImg}
               >
-                ›
+                <img src="/images/next-pic.svg" alt="next" />
               </button>
             </div>
 

@@ -11,19 +11,15 @@ const fetchProducts = async (
   page: number,
   limit = 28
 ): Promise<ApiResponse> => {
-  let url = `https://dummyjson.com/products?limit=${limit}&skip=${
-    (page - 1) * limit
-  }`;
+  let url = `https://dummyjson.com/products?limit=${limit}&skip=${(page - 1) * limit}`;
 
-  if (category) {
+  if (category && category !== "__all__") {
     const apiCategory =
       category.toLowerCase() === "skin-care"
         ? "skincare"
         : category.toLowerCase();
 
-    url = `https://dummyjson.com/products/category/${apiCategory}?limit=${limit}&skip=${
-      (page - 1) * limit
-    }`;
+    url = `https://dummyjson.com/products/category/${apiCategory}?limit=${limit}&skip=${(page - 1) * limit}`;
   }
 
   const res = await fetch(url);

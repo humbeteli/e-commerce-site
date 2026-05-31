@@ -27,8 +27,12 @@ const Pagination = ({ page, setPage, total, limit }: Props) => {
   return (
     <div id="pagination">
       {page > 1 && (
-        <button title="Prev" onClick={() => setPage(page - 1)}>
-          {"←"}
+        <button
+          className="nav-btn"
+          title="Prev"
+          onClick={() => setPage(page - 1)}
+        >
+          <img src="/images/prev-pic.svg" alt="prev" />
         </button>
       )}
       {visiblePages.map((p) => (
@@ -42,8 +46,8 @@ const Pagination = ({ page, setPage, total, limit }: Props) => {
       ))}
 
       {page < totalPages && (
-        <button title="Next" onClick={() => setPage(page + 1)}>
-          {"→"}
+        <button className="nav-btn" title="Next" onClick={() => setPage(page + 1)}>
+          <img src="/images/next-pic.svg" alt="next" />
         </button>
       )}
 

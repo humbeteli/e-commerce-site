@@ -107,7 +107,6 @@
   border-radius: 50%;
   width: 32px;
   height: 32px;
-  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -115,6 +114,11 @@
   z-index: 2;
   transition: all 0.2s ease;
   line-height: 1;
+}
+
+.gallery-arrow img {
+  width: 18px;
+  height: auto;
 }
 
 .gallery-arrow:hover {
@@ -164,6 +168,11 @@
   justify-content: center;
   transition: all 0.2s ease;
   line-height: 1;
+}
+
+.lightbox-arrow img {
+  width: 18px;
+  height: auto;
 }
 
 .lightbox-arrow:hover {
