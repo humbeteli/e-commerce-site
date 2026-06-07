@@ -157,15 +157,6 @@ const Footer = ({
                 <img src="/images/phone.svg" alt="phone" /> +994 50 865 28 79
               </li>
             </ul>
-
-            <h4 className="footer-col-title" style={{ marginTop: "24px" }}>
-              Working Hours
-            </h4>
-            <ul className="footer-contact-list">
-              <li>Mon – Fri: 09:00 – 18:00</li>
-              <li>Sat: 10:00 – 16:00</li>
-              <li>Sun: Closed</li>
-            </ul>
           </div>
         </div>
 

@@ -122,8 +122,7 @@ const CategoryRow = ({
         backgroundImage: `url(${active.image})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
-    >
+      }}>
       <div className="cat-row-overlay" />
 
       <button className="cat-row-arrow" onClick={prev}>
@@ -132,12 +131,7 @@ const CategoryRow = ({
 
       <div className="cat-row-content">
         <span className="cat-row-label">{active.label}</span>
-        <button
-          className="cat-row-shop-btn"
-          onClick={() => onCategorySelect(active.key)}
-        >
-          Shop Now
-        </button>
+        <button className="cat-row-shop-btn" onClick={() => onCategorySelect(active.key)}>Shop Now</button>
       </div>
 
       <div className="cat-row-image" />

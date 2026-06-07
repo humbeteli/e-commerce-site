@@ -97,7 +97,7 @@
 .cat-rows {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .cat-row {
@@ -218,6 +218,7 @@
     padding: 40px 24px;
     min-height: 200px;
     border-radius: 0;
+    margin-bottom: 10px;
   }
 
   .hero-banner::before {
